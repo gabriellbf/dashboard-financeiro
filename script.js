@@ -7,7 +7,6 @@ const expensesDisplay = document.getElementById("expenses-display");
 const totalDisplay = document.getElementById("total-display");
 const listaTransacoes = document.getElementById("lista-transacoes");
 
-// Array para conter as transações
 const transactions = [];
 
 // Detecta quando o usuário clica no botão
@@ -29,6 +28,7 @@ function handleFormSubmit(event) {
 
   addTransactionToDom(transaction);
   updateValues();
+  saveValues();
 
   //Limpa formulário
   form.reset();
@@ -38,14 +38,19 @@ function handleFormSubmit(event) {
 function addTransactionToDom(transaction) {
   const element = document.createElement("div");
   element.classList.add("item-transacao");
+
+  //Caso seja uma entrada, acrescenta a classe que modificará a cor
+  if (transaction.tipo === "entrada") element.classList.add("entryColor");
+
   element.innerHTML = `
   <h4>${transaction.nome}</h4>
-  <p>${transaction.valor.toFixed(2)}</p>
+  <p>R$${transaction.valor.toFixed(2)}</p>
   <p>${transaction.data}</p>
   `;
   listaTransacoes.appendChild(element);
 }
 
+//Atualiza os valores de despesas e total do usuário
 function updateValues() {
   let entryValues = 0;
   let exitValues = 0;
@@ -60,6 +65,31 @@ function updateValues() {
 
   const totalbalance = entryValues - exitValues;
 
-  expensesDisplay.innerText = `R$ ${exitValues.toFixed(2)}`;
-  totalDisplay.innerText = `R$ ${totalbalance.toFixed(2)}`;
+  expensesDisplay.innerText = `R$${exitValues.toFixed(2)}`;
+  totalDisplay.innerText = `R$${totalbalance.toFixed(2)}`;
 }
+
+function saveValues() {
+  //Cria uma entrada e converte a array em string
+  localStorage.setItem("transaction", JSON.stringify(transactions));
+}
+
+function loadValues() {
+  //Lê as entradas e traz os dados como String
+  const data = localStorage.getItem("transaction");
+
+  if (!data) return; // sai da função caso não tenha nada salvo
+
+  //Converte de string para array novamente
+  const savedTransactions = JSON.parse(data);
+
+  //Adiciona os itens antigos ao array vazio e carrega no DOM
+  savedTransactions.forEach((transaction) => {
+    transactions.push(transaction);
+    addTransactionToDom(transaction);
+  });
+  updateValues(); //Recalcula os valores totais
+}
+
+//Carrega a função loadValues ao iniciar o site
+window.addEventListener("load", loadValues);

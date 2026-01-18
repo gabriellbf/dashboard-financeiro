@@ -56,3 +56,7 @@ img {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-right: 5px solid #cc462e;
 }
+
+.item-transacao.entryColor {
+  border-right: 5px solid #2ecc71;
+}
