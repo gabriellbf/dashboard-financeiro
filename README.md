@@ -4,6 +4,7 @@
 
 ![Preview do Projeto](./dashboard.gif) 
 
+### [➡️ Visite a demonstração](https://gabriellbf.github.io/dashboard-financeiro/))
 
 ## 💻 Sobre o Projeto
 
@@ -35,10 +36,4 @@ O projeto foi construído utilizando apenas **tecnologias nativas**, focando na 
   - **Array Methods:** Uso intensivo de `filter`, `sort`, `map` e `forEach` para manipulação de dados.
   - **Date Manipulation:** Tratamento e formatação de datas para o padrão brasileiro (`pt-BR`).
 
-## 🚀 Como executar o projeto
 
-Como este projeto utiliza apenas tecnologias estáticas, não é necessário instalar dependências (npm/yarn).
-
-1. **Clone o repositório:**
-   ```bash
-   git clone [https://github.com/gabriellbfranca/js-refresh-dashboard.git](https://github.com/gabriellbfranca/js-refresh-dashboard.git)
