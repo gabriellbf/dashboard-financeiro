@@ -7,7 +7,7 @@ const expensesDisplay = document.getElementById("expenses-display");
 const totalDisplay = document.getElementById("total-display");
 const listaTransacoes = document.getElementById("lista-transacoes");
 
-const transactions = [];
+let transactions = [];
 
 // Detecta quando o usuário clica no botão
 form.addEventListener("submit", handleFormSubmit);
@@ -26,7 +26,7 @@ function handleFormSubmit(event) {
   transactions.push(transaction);
   console.log(transactions);
 
-  addTransactionToDom(transaction);
+  renderTransactions();
   updateValues();
   saveValues();
 
@@ -43,11 +43,21 @@ function addTransactionToDom(transaction) {
   if (transaction.tipo === "entrada") element.classList.add("entryColor");
 
   element.innerHTML = `
-  <h4>${transaction.nome}</h4>
-  <p>R$${transaction.valor.toFixed(2)}</p>
-  <p>${transaction.data}</p>
+  <h4 class="info-nome">${transaction.nome}</h4>
+  <p  class="info-valor">R$${transaction.valor.toFixed(2)}</p>
+  <p class="info-data">${formatDate(transaction.data)}</p>
+  <button class='delete'>X</button>
   `;
   listaTransacoes.appendChild(element);
+
+  //Remove a transação ao clicar no botão, visualmente e do array/localStorage
+  const deleteBtn = element.querySelector(".delete");
+  deleteBtn.addEventListener("click", () => {
+    transactions = transactions.filter((item) => item.id !== transaction.id);
+    renderTransactions();
+    updateValues();
+    saveValues();
+  });
 }
 
 //Atualiza os valores de despesas e total do usuário
@@ -57,9 +67,9 @@ function updateValues() {
   //Percorre todas as transações e identifica se é entrada ou saída
   transactions.forEach((currentTransaction) => {
     if (currentTransaction.tipo === "entrada") {
-      entryValues = entryValues + currentTransaction.valor;
+      entryValues += currentTransaction.valor;
     } else {
-      exitValues = exitValues + currentTransaction.valor;
+      exitValues += currentTransaction.valor;
     }
   });
 
@@ -83,13 +93,28 @@ function loadValues() {
   //Converte de string para array novamente
   const savedTransactions = JSON.parse(data);
 
-  //Adiciona os itens antigos ao array vazio e carrega no DOM
-  savedTransactions.forEach((transaction) => {
-    transactions.push(transaction);
-    addTransactionToDom(transaction);
-  });
+  //Array recebe todos os dados de uma vez e redesenha com a função
+  transactions = savedTransactions;
+  renderTransactions();
   updateValues(); //Recalcula os valores totais
 }
 
 //Carrega a função loadValues ao iniciar o site
 window.addEventListener("load", loadValues);
+
+//Conversão para data local
+function formatDate(dateString) {
+  const [ano, mes, dia] = dateString.split("-");
+  return `${dia}/${mes}/${ano}`;
+}
+
+//Função para redesenhar as transações e ordenar por data
+function renderTransactions() {
+  listaTransacoes.innerHTML = "";
+
+  transactions.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+  transactions.forEach((transaction) => {
+    addTransactionToDom(transaction);
+  });
+}
