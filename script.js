@@ -24,7 +24,6 @@ function handleFormSubmit(event) {
     tipo: selectTipo.value,
   };
   transactions.push(transaction);
-  console.log(transactions);
 
   renderTransactions();
   updateValues();
